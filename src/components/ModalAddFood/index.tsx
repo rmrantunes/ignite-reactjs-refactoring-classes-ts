@@ -1,4 +1,4 @@
-import { Component, createRef } from "react";
+import { useRef } from "react";
 import { FiCheckSquare } from "react-icons/fi";
 import { FormHandles } from "@unform/core";
 
@@ -13,39 +13,33 @@ type ModalAddFoodProps = {
   handleAddFood(food: FoodType): void;
 };
 
-class ModalAddFood extends Component<ModalAddFoodProps> {
-  private formRef = createRef<FormHandles>();
+function ModalAddFood(props: ModalAddFoodProps) {
+  const formRef = useRef<FormHandles>(null);
 
-  handleSubmit = async (data: FoodType) => {
-    const { setIsOpen, handleAddFood } = this.props;
-
-    handleAddFood(data);
-    setIsOpen();
-  };
-
-  render() {
-    const { isOpen, setIsOpen } = this.props;
-
-    return (
-      <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-        <Form ref={this.formRef} onSubmit={this.handleSubmit}>
-          <h1>Novo Prato</h1>
-          <Input name="image" placeholder="Cole o link aqui" />
-
-          <Input name="name" placeholder="Ex: Moda Italiana" />
-          <Input name="price" placeholder="Ex: 19.90" />
-
-          <Input name="description" placeholder="Descrição" />
-          <button type="submit" data-testid="add-food-button">
-            <p className="text">Adicionar Prato</p>
-            <div className="icon">
-              <FiCheckSquare size={24} />
-            </div>
-          </button>
-        </Form>
-      </Modal>
-    );
+  async function handleSubmit(data: FoodType) {
+    props.handleAddFood(data);
+    props.setIsOpen();
   }
+
+  return (
+    <Modal isOpen={props.isOpen} setIsOpen={props.setIsOpen}>
+      <Form ref={formRef} onSubmit={handleSubmit}>
+        <h1>Novo Prato</h1>
+        <Input name="image" placeholder="Cole o link aqui" />
+
+        <Input name="name" placeholder="Ex: Moda Italiana" />
+        <Input name="price" placeholder="Ex: 19.90" />
+
+        <Input name="description" placeholder="Descrição" />
+        <button type="submit" data-testid="add-food-button">
+          <p className="text">Adicionar Prato</p>
+          <div className="icon">
+            <FiCheckSquare size={24} />
+          </div>
+        </button>
+      </Form>
+    </Modal>
+  );
 }
 
 export default ModalAddFood;
